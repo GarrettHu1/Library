@@ -16,17 +16,25 @@ function getBooksBorrowedCount(books) {
   return borrowedBooks
 }
 
+let helper = function (element) {
+  element.sort((obj1, obj2) => (obj1.count > obj2.count ? -1 : 1));
+};
 function getMostCommonGenres(books) {
-  let littleHelper = books.map((book) => book.genre);
-  let commonGenres = [];
-  littleHelper.forEach((genre) => {
-    let created = commonGenres.findIndex((genreObj) => genreObj.name === genre);
-    created >= 0
-      ? commonGenres[created].count++
-      : commonGenres.push({ name: genre, count: 1 }); 
+  let result = [];
+  books.forEach((book) => {
+    let created = result.findIndex((genreObj) => genreObj.name === book.genre);
+    //check to see if object is already created
+    if (created > 0) {
+      result[created].count++;
+    } else {
+      //else push in the whole new object
+      result.push({ name: book.genre, count: 1 });
+    }
+    helper(result);
   });
-  return commonGenres.sort((obj1, obj2) => obj2.count - obj1.count).slice(0, 5);
+  return result.slice(0, 5);
 }
+
 function getMostPopularBooks(books) {
   const mostPop = books.map(book => ({name: book.title, count: book.borrows.length}))
 
